@@ -1,6 +1,8 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
+require("dotenv").config();
 
 /**
  * routes import
@@ -19,6 +21,14 @@ app.use(cors());
  */
 app.use("/api/category", CategoryRoute);
 app.use("/api/question", QuestionRoute);
+
+try {
+  mongoose.set('strictQuery', true);
+  mongoose.connect(process.env.DATABASE);
+  console.log("database connected");
+} catch (err) {
+  console.log(err);
+}
 
 app.listen(3000, (err) => {
   if (err) console.log("error");

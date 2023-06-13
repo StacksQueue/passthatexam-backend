@@ -12,6 +12,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
+    await Category.create(req.body);
     res.json({ data: null, message: "success post", success: true });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
