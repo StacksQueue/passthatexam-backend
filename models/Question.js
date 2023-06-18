@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const ObjectId = mongoose.Schema.Types.ObjectId;
 const questionSchema = mongoose.Schema({
   source: {
     type: String,
@@ -12,20 +12,27 @@ const questionSchema = mongoose.Schema({
     type: Number,
   },
   major: {
-    type: [String],
+    type: [ObjectId],
     default: [],
+    required: true
   },
   question: {
     type: String,
+    required: true
   },
   choices: {
     type: [String],
+    required: true
   },
   answer: {
     type: String,
+    required: true
   },
   dis: {
     type: Boolean,
-    default: true
-  }
+    default: true,
+  },
 });
+
+module.exports = mongoose.model("question", questionSchema);
+

@@ -4,7 +4,16 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    res.json({ data: null, message: "success", success: true });
+    let { search = "" } = req.query;
+    let query = {
+      $or: [
+        { name: { $regex: search, $options: "i" } },
+        { tagName: { $regex: search, $options: "i" } },
+      ],
+      dis: true,
+    };
+    let categories = await Category.find(query);
+    res.json({ data: categories, message: "success", success: true });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
@@ -20,19 +29,19 @@ router.post("/", async (req, res) => {
 });
 
 router.patch("/:id", async (req, res) => {
-    try {
-      res.json({ data: null, message: "success patch", success: true });
-    } catch (err) {
-      res.json({ data: null, message: err.message, success: false });
-    }
-  });
+  try {
+    res.json({ data: null, message: "success patch", success: true });
+  } catch (err) {
+    res.json({ data: null, message: err.message, success: false });
+  }
+});
 
-  router.delete("/:id", async (req, res) => {
-    try {
-      res.json({ data: null, message: "success delete", success: true });
-    } catch (err) {
-      res.json({ data: null, message: err.message, success: false });
-    }
-  });
+router.delete("/:id", async (req, res) => {
+  try {
+    res.json({ data: null, message: "success delete", success: true });
+  } catch (err) {
+    res.json({ data: null, message: err.message, success: false });
+  }
+});
 
 module.exports = router;
