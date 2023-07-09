@@ -41,7 +41,7 @@ app.get('/', (req, res) => {
   res.json({ data: null, message: "success", success: true });
 })
 
-app.listen(3000, (err) => {
+app.listen(80, (err) => {
   if (err) console.log("error");
-  else console.log("listening to port 3000");
+  else console.log("listening to port 80");
 });
