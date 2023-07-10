@@ -32,7 +32,7 @@ try {
   console.log(err);
 }
 
-app.use(express.static(__dirname +'/dist'));
+app.use(express.static(__dirname +'/dist/pass-that-exam'));
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname + '/dist/pass-that-exam/index.html'));
 })
