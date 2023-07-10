@@ -2,7 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
+const path = require('path');
 require("dotenv").config();
+
 
 /**
  * routes import
@@ -30,16 +32,15 @@ try {
   console.log(err);
 }
 
-// app.use(express.static(__dirname +'/dist'));
-// app.get('/*', (req, res) => {
-//   // res.sendFile(path.join(__dirname + '/dist/index.html'));
-//   console.log('asdfdasf')
-// })
-
-app.get('/', (req, res) => {
-  // res.sendFile(path.join(__dirname + '/dist/index.html'));
-  res.json({ data: null, message: "success", success: true });
+app.use(express.static(__dirname +'/dist'));
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname + '/dist/pass-that-exam/index.html'));
 })
+
+// app.get('/', (req, res) => {
+//   // res.sendFile(path.join(__dirname + '/dist/index.html'));
+//   res.json({ data: null, message: "success", success: true });
+// })
 
 app.listen(3000, (err) => {
   if (err) console.log("error");
