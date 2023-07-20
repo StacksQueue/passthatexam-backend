@@ -2,16 +2,15 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
-const path = require('path');
+const path = require("path");
 require("dotenv").config();
-
 
 /**
  * routes import
  */
 const CategoryRoute = require("./routes/category");
 const QuestionRoute = require("./routes/question");
-
+const ProgramRoute = require("./routes/program");
 /**
  * middlewares
  */
@@ -23,19 +22,21 @@ app.use(cors());
  */
 app.use("/api/category", CategoryRoute);
 app.use("/api/question", QuestionRoute);
+app.use("/api/program", ProgramRoute);
+
 
 try {
-  mongoose.set('strictQuery', true);
+  mongoose.set("strictQuery", true);
   mongoose.connect(process.env.DATABASE);
   console.log("database connected");
 } catch (err) {
   console.log(err);
 }
 
-app.use(express.static(__dirname +'/dist/pass-that-exam'));
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname + '/dist/pass-that-exam/index.html'));
-})
+app.use(express.static(__dirname + "/dist/pass-that-exam"));
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname + "/dist/pass-that-exam/index.html"));
+});
 
 // app.get('/', (req, res) => {
 //   // res.sendFile(path.join(__dirname + '/dist/index.html'));
