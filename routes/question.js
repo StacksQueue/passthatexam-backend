@@ -57,13 +57,17 @@ router.get("/program", async (req, res) => {
 
 router.get("/category", async (req, res) => {
   try {
+    let { search = "" } = req.query;
     let programs = Array.isArray(req.query.program)
       ? req.query.program
       : req.query.program
       ? [req.query.program]
       : ["Civil Service"];
+      
     let categories = await Questions.find({
       program: { $in: programs },
+      $or: [{ major: { $regex: search, $options: "i" } }],
+      dis: true,
     }).distinct("major");
     res.json({
       data: categories,
