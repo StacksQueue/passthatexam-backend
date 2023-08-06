@@ -6,13 +6,13 @@ const questionSchema = mongoose.Schema({
     required: true,
   },
   program: {
-    type: String,
+    type: [String],
   },
   year: {
     type: Number,
   },
   major: {
-    type: [ObjectId],
+    type: [String],
     default: [],
     required: true
   },

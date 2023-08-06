@@ -43,3 +43,4 @@ Thumbs.db
 package-lock.json
 .env
 /data
+/done-processed-data

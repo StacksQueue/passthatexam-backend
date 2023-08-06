@@ -12,12 +12,20 @@ router.get("/", async (req, res) => {
       ? req.query.major
       : req.query.major
       ? [req.query.major]
-      : ["648867e36456d5a32e13b416", "648869996456d5a32e13b425"];
+      : ["Civil Service", "English"];
+    let programs = Array.isArray(req.query.programs)
+      ? req.query.programs
+      : req.query.programs
+      ? [req.query.programs]
+      : ["Civil Service"];
 
-    major = major.map((x) => new ObjectId(x));
+    // major = major.map((x) => new ObjectId(x));
     let aggregateQuery = [
       {
         $match: {
+          program: {
+            $in: programs,
+          },
           major: {
             $in: major,
           },
@@ -33,6 +41,35 @@ router.get("/", async (req, res) => {
     let questions = await Questions.aggregate(aggregateQuery);
 
     res.json({ data: questions, message: "success", success: true });
+  } catch (err) {
+    res.json({ data: null, message: err.message, success: false });
+  }
+});
+
+router.get("/program", async (req, res) => {
+  try {
+    let programs = await Questions.distinct("program");
+    res.json({ data: programs, message: "success get program", success: true });
+  } catch (err) {
+    res.json({ data: null, message: err.message, success: false });
+  }
+});
+
+router.get("/category", async (req, res) => {
+  try {
+    let programs = Array.isArray(req.query.program)
+      ? req.query.program
+      : req.query.program
+      ? [req.query.program]
+      : ["Civil Service"];
+    let categories = await Questions.find({
+      program: { $in: programs },
+    }).distinct("major");
+    res.json({
+      data: categories,
+      message: "success get program",
+      success: true,
+    });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }

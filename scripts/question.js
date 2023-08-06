@@ -1,4 +1,4 @@
-const questions = require("./../data/actual-test-2018-prof-ed-wcateg.json");
+const questions = require("./../data/civil-service-review-mocktest.json");
 const Question = require("./../models/Question");
 const Category = require("./../models/Category");
 const mongoose = require("mongoose");
@@ -8,8 +8,8 @@ require("dotenv").config({ path: "../.env" });
   await connectDB();
 
   for (let question of questions) {
-    let found = await delay(getMajorByName(question.category));
-    question.category = found.map((x) => x._id);
+    // let found = await delay(getMajorByName(question.category));
+    // question.category = found.map((x) => x._id);
     await delay(addQuestions(question));
   }
 })();
@@ -33,9 +33,9 @@ async function getMajorByName(category) {
 async function addQuestions(question) {
   try {
     let result = await Question.create({
-      source: "actual-test-2018-prof-ed",
-      program: "Education",
-      year: 2018,
+      source: "civil-service-review-mocktest",
+      program: ["Civil Service"],
+      year: 2023,
       major: question.category,
       question: question.question,
       choices: question.choices,
@@ -52,3 +52,8 @@ async function delay(fn, params) {
     setTimeout(async () => resolve(await fn), 50);
   });
 }
+
+// Based on DepEd's grading system, which assessment is/are used to determine grade of students?
+// Simplify: 3 (2x - 5) - (6 - x)
+// Which among the statements below support the idea that Philippine education system is community centered?
+// Which among the statements below support the idea that Philippine education system is community centered?
