@@ -19,7 +19,18 @@ router.get("/", async (req, res) => {
       ? [req.query.programs]
       : ["Civil Service"];
 
-    // major = major.map((x) => new ObjectId(x));
+    /**
+     * since General Education | Professional Education | Civil Service
+     * category are always in the major, we remove them for specific queries
+     * of questions
+     */
+    let defaultmajors = [
+      "Civil Service",
+      "Professional Education",
+      "General Education",
+    ];
+
+    major = major.filter((x) => !defaultmajors.includes(x));
     let aggregateQuery = [
       {
         $match: {
@@ -63,7 +74,7 @@ router.get("/category", async (req, res) => {
       : req.query.program
       ? [req.query.program]
       : ["Civil Service"];
-      
+
     let categories = await Questions.find({
       program: { $in: programs },
       $or: [{ major: { $regex: search, $options: "i" } }],
