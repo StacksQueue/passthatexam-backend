@@ -33,6 +33,11 @@ try {
   console.log(err);
 }
 
+app.get("/robots.txt", (req, res) => {
+  res.type("text/plain");
+  res.send("User-agent: *\nDisallow:");
+});
+
 app.use(express.static(__dirname + "/dist/pass-that-exam"));
 app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname + "/dist/pass-that-exam/index.html"));
