@@ -30,7 +30,9 @@ router.get("/", async (req, res) => {
       "General Education",
     ];
 
-    major = major.filter((x) => !defaultmajors.includes(x));
+    let filtered_major = major.filter((x) => !defaultmajors.includes(x));
+    major = filtered_major.length? filtered_major : major;
+
     let aggregateQuery = [
       {
         $match: {
