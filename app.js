@@ -11,6 +11,8 @@ require("dotenv").config();
 const CategoryRoute = require("./routes/category");
 const QuestionRoute = require("./routes/question");
 const ProgramRoute = require("./routes/program");
+const ReportRoute = require("./routes/report");
+
 /**
  * middlewares
  */
@@ -23,6 +25,8 @@ app.use(cors());
 app.use("/api/category", CategoryRoute);
 app.use("/api/question", QuestionRoute);
 app.use("/api/program", ProgramRoute);
+app.use("/api/report", ReportRoute);
+
 
 
 try {
