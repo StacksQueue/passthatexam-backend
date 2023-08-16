@@ -28,6 +28,11 @@ const questionSchema = mongoose.Schema({
     type: String,
     required: true
   },
+  explanation: {
+    type: String,
+    default: "",
+    required: true
+  },
   dis: {
     type: Boolean,
     default: true,

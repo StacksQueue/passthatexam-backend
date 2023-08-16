@@ -1,4 +1,4 @@
-const questions = require("./../data/civil-service-review-mocktest.json");
+const questions = require("./../data/BEED-PROF-ED-xxx/BEED-PROF-ED-xxx(1-150).json");
 const Question = require("./../models/Question");
 const Category = require("./../models/Category");
 const mongoose = require("mongoose");
@@ -33,8 +33,8 @@ async function getMajorByName(category) {
 async function addQuestions(question) {
   try {
     let result = await Question.create({
-      source: "civil-service-review-mocktest",
-      program: ["Civil Service"],
+      source: "BEED-PROF-ED-xxx(1-150)",
+      program: ["Education"],
       year: 2023,
       major: question.category,
       question: question.question,

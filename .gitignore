@@ -44,3 +44,5 @@ package-lock.json
 .env
 /data
 /done-processed-data
+/scripts
+/explanation
