@@ -6,15 +6,18 @@ router.get("/", async (req, res) => {
   try {
     let {
       questionId = "",
-      createdAt = "",
+      from = "",
+      to = "",
       isDoneProcessed = false,
     } = req.query;
     let query = {
-      isDoneProcessed
+      isDoneProcessed,
     };
     if (questionId) query.questionId = questionId;
+    if (from && to)
+      query.createdAt = { $gte: new Date(from), $lt: new Date(to) };
 
-    let reports = await Report.find(query).limit(10).lean();
+    let reports = await Report.find(query).lean();
     res.json({ data: reports, message: "success get", success: true });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
@@ -30,9 +33,13 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.patch("/:id", async (req, res) => {
+router.patch("/:questionId", async (req, res) => {
   try {
-    res.json({ data: null, message: "success patch", success: true });
+    let questionId = req.params.questionId;
+    let {isDoneProcessed = true} = req.body;
+    let result = await Report.updateMany({ questionId }, { isDoneProcessed });
+
+    res.json({ data: result, message: "success patch", success: true });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }

@@ -42,6 +42,7 @@ router.get("/", async (req, res) => {
           major: {
             $in: major,
           },
+          dis: true,
         },
       },
       {
