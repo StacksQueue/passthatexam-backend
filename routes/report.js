@@ -13,11 +13,16 @@ router.get("/", async (req, res) => {
     let query = {
       isDoneProcessed,
     };
+
+    let populateQuery = [
+      {path: "questionId", select: 'question answer'}
+    ]
+
     if (questionId) query.questionId = questionId;
     if (from && to)
       query.createdAt = { $gte: new Date(from), $lt: new Date(to) };
 
-    let reports = await Report.find(query).lean();
+    let reports = await Report.find(query).populate(populateQuery).lean();
     res.json({ data: reports, message: "success get", success: true });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });

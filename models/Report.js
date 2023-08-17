@@ -8,7 +8,8 @@ const reportSchema = mongoose.Schema(
     },
     questionId: {
       type: String,
-      required: true
+      required: true,
+      ref: 'question'
     },
     remarks: {
       type: String,
