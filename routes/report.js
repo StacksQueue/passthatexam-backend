@@ -26,7 +26,10 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    await Report.create(req.body);
+    let { questionId, type, remarks, isDoneProcessed = false } = req.body;
+    let found = await Report.find({ questionId, isDoneProcessed: true });
+    if (found && found.length) isDoneProcessed = true;
+    await Report.create({ questionId, type, remarks, isDoneProcessed });
     res.json({ data: null, message: "success post", success: true });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
@@ -36,7 +39,7 @@ router.post("/", async (req, res) => {
 router.patch("/:questionId", async (req, res) => {
   try {
     let questionId = req.params.questionId;
-    let {isDoneProcessed = true} = req.body;
+    let { isDoneProcessed = true } = req.body;
     let result = await Report.updateMany({ questionId }, { isDoneProcessed });
 
     res.json({ data: result, message: "success patch", success: true });
