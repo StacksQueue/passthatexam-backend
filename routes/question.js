@@ -31,7 +31,7 @@ router.get("/", async (req, res) => {
     ];
 
     let filtered_major = major.filter((x) => !defaultmajors.includes(x));
-    major = filtered_major.length? filtered_major : major;
+    major = filtered_major.length ? filtered_major : major;
 
     let aggregateQuery = [
       {
@@ -55,6 +55,37 @@ router.get("/", async (req, res) => {
     let questions = await Questions.aggregate(aggregateQuery);
 
     res.json({ data: questions, message: "success", success: true });
+  } catch (err) {
+    res.json({ data: null, message: err.message, success: false });
+  }
+});
+
+router.get("/search", async (req, res) => {
+  try {
+    let { page = 1, limit = 25, keyword = "" } = req.query;
+    let query = {
+      $or: [
+        { question: { $regex: keyword, $options: "i" } },
+        { choices: { $regex: keyword, $options: "i" } },
+        { answer: { $regex: keyword, $options: "i" } },
+        { explanation: { $regex: keyword, $options: "i" } },
+      ],
+      dis: true,
+    };
+
+    let [questions, total] = await Promise.all([
+      Questions.find(query)
+        .limit(limit)
+        .skip(limit * (page - 1)),
+      Questions.find(query).count(),
+    ]);
+
+    res.json({
+      data: questions,
+      total: total,
+      message: "success get search questions",
+      success: true,
+    });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
