@@ -62,9 +62,10 @@ router.get("/", async (req, res) => {
 
 router.get("/search", async (req, res) => {
   try {
-    let { page = 1, limit = 25, keyword = "" } = req.query;
+    let { page = 1, limit = 25, keyword = "", programs = [] } = req.query;
     let query = {
       $or: [
+        { major: { $regex: keyword, $options: "i" } },
         { question: { $regex: keyword, $options: "i" } },
         { choices: { $regex: keyword, $options: "i" } },
         { answer: { $regex: keyword, $options: "i" } },
@@ -73,12 +74,18 @@ router.get("/search", async (req, res) => {
       dis: true,
     };
 
+    if (programs.length) query.program = { $in: programs };
+
     let [questions, total] = await Promise.all([
       Questions.find(query)
         .limit(limit)
         .skip(limit * (page - 1)),
       Questions.find(query).count(),
     ]);
+
+    // eg. page = 2, total = 1
+    if (total && !questions.length)
+      questions = await Questions.find(query).limit(limit);
 
     res.json({
       data: questions,
