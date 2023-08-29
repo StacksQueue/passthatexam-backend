@@ -70,9 +70,12 @@ router.get("/search", async (req, res) => {
         { choices: { $regex: keyword, $options: "i" } },
         { answer: { $regex: keyword, $options: "i" } },
         { explanation: { $regex: keyword, $options: "i" } },
+        { source: keyword },
       ],
       dis: true,
     };
+
+    if (mongoose.isValidObjectId(keyword)) query["$or"].push({ _id: keyword });
 
     if (programs.length) query.program = { $in: programs };
 
