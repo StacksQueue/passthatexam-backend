@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const compression = require('compression');
 const cors = require("cors");
 const app = express();
 const path = require("path");
@@ -18,6 +19,7 @@ const ReportRoute = require("./routes/report");
  */
 app.use(express.json());
 app.use(cors());
+app.use(compression());
 
 /**
  * routes
