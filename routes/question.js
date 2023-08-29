@@ -62,7 +62,13 @@ router.get("/", async (req, res) => {
 
 router.get("/search", async (req, res) => {
   try {
-    let { page = 1, limit = 25, keyword = "", programs = [] } = req.query;
+    let {
+      page = 1,
+      limit = 25,
+      keyword = "",
+      programs = [],
+      sort = "desc",
+    } = req.query;
     let query = {
       $or: [
         { major: { $regex: keyword, $options: "i" } },
@@ -82,7 +88,8 @@ router.get("/search", async (req, res) => {
     let [questions, total] = await Promise.all([
       Questions.find(query)
         .limit(limit)
-        .skip(limit * (page - 1)),
+        .skip(limit * (page - 1))
+        .sort({ _id: sort }),
       Questions.find(query).count(),
     ]);
 
