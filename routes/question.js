@@ -12,7 +12,7 @@ router.get("/", async (req, res) => {
       ? req.query.major
       : req.query.major
       ? [req.query.major]
-      : ["Civil Service", "English"];
+      : ["Civil Service", "Vocabulary"];
     let programs = Array.isArray(req.query.programs)
       ? req.query.programs
       : req.query.programs
@@ -112,6 +112,83 @@ router.get("/program", async (req, res) => {
   try {
     let programs = await Questions.distinct("program");
     res.json({ data: programs, message: "success get program", success: true });
+  } catch (err) {
+    res.json({ data: null, message: err.message, success: false });
+  }
+});
+
+router.get("/coverage", async (req, res) => {
+  try {
+    let { program = "Education" } = req.query;
+    let aggregateQuery = [
+      {
+        $match: {
+          program: program,
+        },
+      },
+      {
+        $project: {
+          major: {
+            $arrayElemAt: ["$major", 0],
+          },
+          coverage: {
+            $slice: [
+              "$major",
+              1,
+              {
+                $size: "$major",
+              },
+            ],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "$major",
+          coverage: {
+            $push: "$coverage",
+          },
+        },
+      },
+      {
+        $project: {
+          major: "$_id",
+          coverage: 1,
+          _id: 0,
+        },
+      },
+      {
+        $unwind: {
+          path: "$coverage",
+        },
+      },
+      {
+        $unwind: {
+          path: "$coverage",
+        },
+      },
+      {
+        $group: {
+          _id: "$major",
+          coverage: {
+            $addToSet: "$coverage",
+          },
+        },
+      },
+      {
+        $project: {
+          major: "$_id",
+          coverage: 1,
+          _id: 0,
+        },
+      },
+    ];
+    let coverages = await Questions.aggregate(aggregateQuery);
+    res.json({
+      data: coverages,
+      message: "success get program",
+      success: true,
+    });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }

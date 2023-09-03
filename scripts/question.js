@@ -1,4 +1,4 @@
-const questions = require("./../data/saved-stq-1/saved-stq-1.json");
+const questions = require("./../data/saved-stq-2/saved-stq-2.json");
 const Question = require("./../models/Question");
 const Category = require("./../models/Category");
 const mongoose = require("mongoose");
@@ -27,20 +27,20 @@ async function connectDB() {
 async function getMajorByName(category) {
   let query = { name: { $in: category }, dis: true };
   return await Category.find(query).select("name tagName programBelong");
-  
 }
 
 async function addQuestions(question) {
   try {
     let result = await Question.create({
-      source: "saved-stq-1",
+      source: "saved-stq-2",
       program: ["Education"],
       year: 2023,
       major: question.category,
       question: question.question,
       choices: question.choices,
       answer: question.answer,
-      explanation: question.explanation
+      explanation: question.explanation ? question.explanation : "",
+      dis: question.dis ? question.dis : "",
     });
     console.log("new questions created with id:", result._id);
   } catch (err) {
