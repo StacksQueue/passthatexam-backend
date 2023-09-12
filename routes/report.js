@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
     };
 
     let populateQuery = [
-      {path: "questionId", select: 'question choices answer'}
+      {path: "questionId", select: 'question choices answer explanation'}
     ]
 
     if (questionId) query.questionId = questionId;

@@ -7,43 +7,15 @@ const ObjectId = mongoose.Types.ObjectId;
 
 router.get("/", async (req, res) => {
   try {
-    let { limit = 25 } = req.query;
-    let major = Array.isArray(req.query.major)
-      ? req.query.major
-      : req.query.major
-      ? [req.query.major]
-      : ["Civil Service", "Vocabulary"];
-    let programs = Array.isArray(req.query.programs)
-      ? req.query.programs
-      : req.query.programs
-      ? [req.query.programs]
-      : ["Civil Service"];
+    let { limit = 25, program = "Education", major = [] } = req.query;
+    major = Array.isArray(major) ? major : [major];
 
-    /**
-     * since General Education | Professional Education | Civil Service
-     * category are always in the major, we remove them for specific queries
-     * of questions
-     */
-    let defaultmajors = [
-      "Civil Service",
-      "Professional Education",
-      "General Education",
-    ];
-
-    let filtered_major = major.filter((x) => !defaultmajors.includes(x));
-    major = filtered_major.length ? filtered_major : major;
+    let query = { program, dis: true };
+    if (major.length) query.major = { $in: major };
 
     let aggregateQuery = [
       {
-        $match: {
-          program: {
-            $in: programs,
-          },
-          major: {
-            $in: major,
-          },
-          dis: true,
-        },
+        $match: query,
       },
       {
         $sample: {
@@ -119,15 +91,10 @@ router.get("/program", async (req, res) => {
 
 router.get("/coverage", async (req, res) => {
   try {
-    let { program = "Education" } = req.query;
     let aggregateQuery = [
       {
-        $match: {
-          program: program,
-        },
-      },
-      {
         $project: {
+          program: 1,
           major: {
             $arrayElemAt: ["$major", 0],
           },
@@ -143,43 +110,42 @@ router.get("/coverage", async (req, res) => {
         },
       },
       {
+        $unwind: {
+          path: "$coverage",
+        },
+      },
+      {
         $group: {
           _id: "$major",
-          coverage: {
-            $push: "$coverage",
+          program: {
+            $addToSet: "$program",
           },
-        },
-      },
-      {
-        $project: {
-          major: "$_id",
-          coverage: 1,
-          _id: 0,
-        },
-      },
-      {
-        $unwind: {
-          path: "$coverage",
-        },
-      },
-      {
-        $unwind: {
-          path: "$coverage",
-        },
-      },
-      {
-        $group: {
-          _id: "$major",
           coverage: {
             $addToSet: "$coverage",
           },
         },
       },
       {
+        $unwind: {
+          path: "$_id",
+        },
+      },
+      {
+        $unwind: {
+          path: "$program",
+        },
+      },
+      {
+        $unwind: {
+          path: "$program",
+        },
+      },
+      {
         $project: {
           major: "$_id",
-          coverage: 1,
           _id: 0,
+          program: 1,
+          coverage: 1,
         },
       },
     ];
