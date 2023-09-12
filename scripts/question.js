@@ -1,4 +1,4 @@
-const questions = require("./../data/saved-stq-2/saved-stq-2.json");
+const questions = require("./../data/GENED PROF ED FINAL/profed-part1.json");
 const Question = require("./../models/Question");
 const Category = require("./../models/Category");
 const mongoose = require("mongoose");
@@ -32,7 +32,7 @@ async function getMajorByName(category) {
 async function addQuestions(question) {
   try {
     let result = await Question.create({
-      source: "saved-stq-2",
+      source: "GENED PROF ED FINAL",
       program: ["Education"],
       year: 2023,
       major: question.category,
@@ -40,7 +40,7 @@ async function addQuestions(question) {
       choices: question.choices,
       answer: question.answer,
       explanation: question.explanation ? question.explanation : "",
-      dis: question.dis ? question.dis : "",
+      dis: question.dis ? question.dis : true,
     });
     console.log("new questions created with id:", result._id);
   } catch (err) {
