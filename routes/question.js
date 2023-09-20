@@ -39,7 +39,7 @@ router.get("/search", async (req, res) => {
       limit = 25,
       keyword = "",
       programs = [],
-      sort = "desc",
+      sort = "asc",
     } = req.query;
     let query = {
       $or: [
