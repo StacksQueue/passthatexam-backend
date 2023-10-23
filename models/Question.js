@@ -31,7 +31,10 @@ const questionSchema = mongoose.Schema({
   explanation: {
     type: String,
     default: "",
-    required: true
+  },
+  verified: {
+    type: Boolean,
+    default: false
   },
   dis: {
     type: Boolean,
