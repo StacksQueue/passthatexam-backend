@@ -1,4 +1,4 @@
-const questions = require("./../data/GENERAL EDUCATION 1-250 Items With Answers/questions.json");
+const questions = require("./../data/Reviewer/Reviewer - TLE Carpentry.json");
 const Question = require("./../models/Question");
 const Category = require("./../models/Category");
 const mongoose = require("mongoose");
@@ -32,14 +32,15 @@ async function getMajorByName(category) {
 async function addQuestions(question) {
   try {
     let result = await Question.create({
-      source: "GENERAL EDUCATION 1-250 Items With Answers",
+      source: "Reviewer - TLE Carpentry",
       program: ["Education"],
       year: 2023,
-      major: question.category,
+      major: question.category? question.category: [],
       question: question.question,
       choices: question.choices,
       answer: question.answer,
       explanation: question.explanation ? question.explanation : "",
+      verified: question.verified ? question.verified : false,
       dis: question.dis ? question.dis : true,
     });
     console.log("new questions created with id:", result._id);

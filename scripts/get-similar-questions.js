@@ -1,14 +1,17 @@
 const questions = require("./../data/passthatexam.questions.json");
-const new_q = require("./../data/GENERAL EDUCATION 1-250 Items With Answers/questions.json");
-
+const new_q = require("./../data/FINAL COACHING GOOD LUCK (dec 2019)/FINAL COACHING GOOD LUCK (dec 2019).json");
+// const new_q = require('./removed-duplicate.json');
+const fs = require('fs');
 (async () => {
   new_q.forEach((question) => {
     let similars = getSimilarQuestions(question.question, questions);
-    if (similars.length) {
-      console.log(similars.map((x) => x.question));
+    if (similars.length && question.dis != false) {
+
+      // console.log(similars.map((x) => x.question));
+      console.log(question.dis != false)
       console.log(question.question);
       console.log("\n");
-
+      question.dis = false;
     }
   });
   // let similars = getSimilarQuestions(
@@ -16,6 +19,10 @@ const new_q = require("./../data/GENERAL EDUCATION 1-250 Items With Answers/ques
   //   questions
   // );
   // console.log(similars.map((x) => x.question));
+
+  fs.writeFile('removed-duplicate.json', JSON.stringify(new_q), 'utf8', ()=>{
+    console.log('done')
+  })
 })();
 
 function getSimilarQuestions(target, arr) {
