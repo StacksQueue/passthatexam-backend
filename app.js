@@ -44,10 +44,10 @@ app.get("/robots.txt", (req, res) => {
   res.send("User-agent: *\nDisallow:");
 });
 
-app.get("/ads.txt", (req, res) => {
-  res.type("text/plain");
-  res.send("google.com, pub-6202000492749464, DIRECT, f08c47fec0942fa0");
-});
+// app.get("/ads.txt", (req, res) => {
+//   res.type("text/plain");
+//   res.send("google.com, pub-6202000492749464, DIRECT, f08c47fec0942fa0");
+// });
 
 app.use(express.static(__dirname + "/dist/pass-that-exam"));
 app.get("/*", (req, res) => {
