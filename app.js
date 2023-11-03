@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const compression = require('compression');
+const compression = require("compression");
 const cors = require("cors");
 const app = express();
 const path = require("path");
@@ -29,8 +29,6 @@ app.use("/api/question", QuestionRoute);
 app.use("/api/program", ProgramRoute);
 app.use("/api/report", ReportRoute);
 
-
-
 try {
   mongoose.set("strictQuery", true);
   mongoose.connect(process.env.DATABASE);
@@ -44,10 +42,10 @@ app.get("/robots.txt", (req, res) => {
   res.send("User-agent: *\nDisallow:");
 });
 
-// app.get("/ads.txt", (req, res) => {
-//   res.type("text/plain");
-//   res.send("google.com, pub-6202000492749464, DIRECT, f08c47fec0942fa0");
-// });
+app.get("/ads.txt", (req, res) => {
+  res.type("text/plain");
+  res.send("google.com, pub-6202000492749464, DIRECT, f08c47fec0942fa0");
+});
 
 app.use(express.static(__dirname + "/dist/pass-that-exam"));
 app.get("/*", (req, res) => {
