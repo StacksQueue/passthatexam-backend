@@ -1,4 +1,4 @@
-const questions = require("./../data/Reviewer/Reviewer - TLE Carpentry.json");
+const questions = require("./../data/soc.sci (jul 2017)/questions.json");
 const Question = require("./../models/Question");
 const Category = require("./../models/Category");
 const mongoose = require("mongoose");
@@ -32,15 +32,16 @@ async function getMajorByName(category) {
 async function addQuestions(question) {
   try {
     let result = await Question.create({
-      source: "Reviewer - TLE Carpentry",
+      source: "soc.sci (jul 2017)",
+      verified: true,
       program: ["Education"],
-      year: 2023,
+      year: 2017,
       major: question.category? question.category: [],
       question: question.question,
       choices: question.choices,
       answer: question.answer,
       explanation: question.explanation ? question.explanation : "",
-      verified: question.verified ? question.verified : false,
+      // verified: question.verified ? question.verified : false,
       dis: question.dis ? question.dis : true,
     });
     console.log("new questions created with id:", result._id);

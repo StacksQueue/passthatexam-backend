@@ -1,5 +1,4 @@
-const questions = require("./../..refactor-category/Civil Service Exam Complete Reviewer Philippines 2017.json");
-// const questions = require("./../..refactor-category/Phil CSE Complete Reviewer 2019.json");
+const questions = require("./nice.json");
 const Question = require("./../models/Question");
 const mongoose = require("mongoose");
 require("dotenv").config({ path: "../.env" });
@@ -8,13 +7,10 @@ require("dotenv").config({ path: "../.env" });
   await connectDB();
 
   for (let q of questions) {
-    let found = await delay(getQuestionByName(q));
-
-    if (found) {
-      console.log("found");
-      await Question.updateOne({ _id: found._id }, { major: q.category });
-    } else console.log(q.question);
+    await Question.updateOne({ _id: q._id.$oid }, { major: q.category });
+    console.log("done", q._id.$oid);
   }
+  console.log("finish");
 })();
 
 async function connectDB() {
