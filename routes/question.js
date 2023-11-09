@@ -13,16 +13,7 @@ router.get("/", async (req, res) => {
     let query = { program, dis: true };
     if (major.length) query.major = { $in: major };
 
-    let aggregateQuery = [
-      {
-        $match: query,
-      },
-      {
-        $sample: {
-          size: Number(limit),
-        },
-      },
-    ];
+    let aggregateQuery = [{ $match: query }, { $sample: { size: Number(limit) } }];
 
     let questions = await Questions.aggregate(aggregateQuery);
 
@@ -32,15 +23,78 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/groupbycategory", async (req, res) => {
+  try {
+    let { page = 1, limit = 25, major = [], main = ["General Education"] } = req.query;
+    major = Array.isArray(major) ? major : [major];
+    main = Array.isArray(main) ? main : [main];
+    console.log(major);
+
+    let query = { dis: true };
+    if (major.length) query.major = { $in: major };
+
+    let aggregateQuery = [
+      {
+        $match: {
+          "major.0": {
+            $in: main,
+          },
+        },
+      },
+      {
+        $unwind: {
+          path: "$major",
+        },
+      },
+      {
+        $group: {
+          _id: "$major",
+          data: {
+            $push: {
+              _id: "$_id",
+              question: "$question",
+              choices: "$choices",
+              answer: "$answer",
+              explanation: "$explanation",
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          data: {
+            $slice: ["$data", Number(limit) * (page - 1), Number(limit)],
+          },
+        },
+      },
+      {
+        $match: {
+          _id: {
+            $in: major,
+          },
+        },
+      },
+      {
+        $project: {
+          coverage: "$_id",
+          question: "$data",
+          _id: 0,
+        },
+      },
+    ];
+
+    let data = await Questions.aggregate(aggregateQuery);
+
+    res.json({ data: data, message: "success", success: true });
+  } catch (err) {
+    res.json({ data: null, message: err.message, success: false });
+  }
+});
+
 router.get("/search", async (req, res) => {
   try {
-    let {
-      page = 1,
-      limit = 25,
-      keyword = "",
-      programs = [],
-      sort = "asc",
-    } = req.query;
+    let { page = 1, limit = 25, keyword = "", programs = [], sort = "asc" } = req.query;
     let query = {
       $or: [
         { major: { $regex: keyword, $options: "i" } },
@@ -66,8 +120,7 @@ router.get("/search", async (req, res) => {
     ]);
 
     // eg. page = 2, total = 1
-    if (total && !questions.length)
-      questions = await Questions.find(query).limit(limit);
+    if (total && !questions.length) questions = await Questions.find(query).limit(limit);
 
     res.json({
       data: questions,
@@ -95,24 +148,14 @@ router.get("/coverage", async (req, res) => {
       {
         $project: {
           program: 1,
-          major: {
-            $arrayElemAt: ["$major", 0],
-          },
+          major: { $arrayElemAt: ["$major", 0] },
           coverage: {
-            $slice: [
-              "$major",
-              1,
-              {
-                $size: "$major",
-              },
-            ],
+            $slice: ["$major", 1, { $size: "$major" }],
           },
         },
       },
       {
-        $unwind: {
-          path: "$coverage",
-        },
+        $unwind: { path: "$coverage" },
       },
       {
         $group: {
@@ -126,19 +169,13 @@ router.get("/coverage", async (req, res) => {
         },
       },
       {
-        $unwind: {
-          path: "$_id",
-        },
+        $unwind: { path: "$_id" },
       },
       {
-        $unwind: {
-          path: "$program",
-        },
+        $unwind: { path: "$program" },
       },
       {
-        $unwind: {
-          path: "$program",
-        },
+        $unwind: { path: "$program" },
       },
       {
         $project: {
