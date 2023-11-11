@@ -7,11 +7,13 @@ const ObjectId = mongoose.Types.ObjectId;
 
 router.get("/", async (req, res) => {
   try {
-    let { limit = 25, program = "Education", major = [] } = req.query;
-    major = Array.isArray(major) ? major : [major];
+    let { limit = 25, program = "Education", major = "", coverage = [] } = req.query;
+    coverage = Array.isArray(coverage) ? coverage : [coverage];
 
     let query = { program, dis: true };
-    if (major.length) query.major = { $in: major };
+
+    if (coverage.length) query["major.1"] = { $in: coverage };
+    else if (major) query["major.0"] = major;
 
     let aggregateQuery = [{ $match: query }, { $sample: { size: Number(limit) } }];
 
