@@ -51,7 +51,7 @@ router.patch("/:reportId", async (req, res) => {
     let report = await Report.findById(reportId);
     let [q, updatedReports] = await Promise.all([
       Questions.findByIdAndUpdate(report.questionId, questionUpdateQuery),
-      Report.updateMany({ question: report.questionId }, { isDoneProcessed }),
+      Report.updateMany({ questionId: report.questionId }, { isDoneProcessed }),
     ]);
 
     res.json({ data: updatedReports, message: "success patch", success: true });
