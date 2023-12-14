@@ -13,13 +13,16 @@ router.get("/", async (req, res) => {
       isDoneProcessed,
     };
 
-    let populateQuery = [{ path: "questionId", select: "question choices answer explanation" }];
+    let populateQuery = [{ path: "questionId", select: "question choices answer explanation verified" }];
 
     if (questionId) query.questionId = questionId;
     if (from && to) query.createdAt = { $gte: new Date(from), $lt: new Date(to) };
 
     let reports = await Report.find(query).populate(populateQuery).lean();
-    res.json({ data: reports, message: "success get", success: true });
+    let filtered = reports.filter(
+      (report) => report.questionId && (report.questionId.verified == false || report.questionId.verified == undefined)
+    );
+    res.json({ data: filtered, message: "success get", success: true });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
   }
@@ -40,13 +43,22 @@ router.post("/", async (req, res) => {
 router.patch("/:reportId", async (req, res) => {
   try {
     let reportId = req.params.reportId;
-    let { updatedAnswer } = req.query;
+    let { updatedAnswer, explanation = "", dis } = req.query;
     let { isDoneProcessed = true } = req.body;
 
     let questionUpdateQuery = {
       verified: true,
     };
-    if (updatedAnswer) questionUpdateQuery.answer = updatedAnswer;
+
+    if (explanation.length) questionUpdateQuery.explanation = explanation;
+    if (dis == 'false') {
+      console.log("hereee", dis);
+      questionUpdateQuery.dis = false;
+    }
+    if (updatedAnswer) {
+      questionUpdateQuery.answer = updatedAnswer;
+      questionUpdateQuery.explanation = explanation;
+    }
 
     let report = await Report.findById(reportId);
     let [q, updatedReports] = await Promise.all([
