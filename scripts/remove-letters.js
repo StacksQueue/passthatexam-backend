@@ -1,9 +1,9 @@
-const questions = require("./../data/soc.sci (jul 2017)/questions.json");
+const questions = require("./../data/");
 const fs = require("fs");
 
 (() => {
-  // const regex = /^[a-d]\.\s+/gm;
-  const regex = /^[A-D]\)\s+/gm;
+  const regex = /^[a-zA-Z]\.\s+/gm;
+  // const regex = /^[a-zA-Z]\)\s+/gm;
 
   let no_letters = questions.reduce((acc, curr, ndx, arr) => {
     curr.answer = curr.answer.replace(regex, "");

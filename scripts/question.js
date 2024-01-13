@@ -1,4 +1,4 @@
-const questions = require("./../data/post-let/post-let.json");
+const questions = require("./../data/...Reviewed/Physical-Science-Sept-2012_with-answer-1.doc · version 1.json");
 const Question = require("./../models/Question");
 const Category = require("./../models/Category");
 const mongoose = require("mongoose");
@@ -18,7 +18,7 @@ async function connectDB() {
   try {
     mongoose.set("strictQuery", true);
     await mongoose.connect(process.env.DATABASE);
-    console.log("database connected", process.env.DATABASE);
+    console.log("database connected");
   } catch (err) {
     console.log(err);
   }
@@ -32,11 +32,10 @@ async function getMajorByName(category) {
 async function addQuestions(question) {
   try {
     let result = await Question.create({
-      source: "LETREVIEW2016POSTTESTINGENERALEDUCATIONSEPTEMBER18,2016",
-      verified: true,
+      source: "Physical-Science-Sept-2012_with-answer-1.doc · version 1",
       program: ["Education"],
-      year: 2016,
-      major: question.category? question.category: [],
+      year: 2024,
+      major: question.category,
       question: question.question,
       choices: question.choices,
       answer: question.answer,
