@@ -1,4 +1,4 @@
-const questions = require("./../data/...Reviewed/Physical-Science-Sept-2012_with-answer-1.doc · version 1.json");
+const questions = require("./../data/LETMAPEH-reviewer/questions - 2.json");
 const Question = require("./../models/Question");
 const Category = require("./../models/Category");
 const mongoose = require("mongoose");
@@ -32,7 +32,7 @@ async function getMajorByName(category) {
 async function addQuestions(question) {
   try {
     let result = await Question.create({
-      source: "Physical-Science-Sept-2012_with-answer-1.doc · version 1",
+      source: "LETMAPEH-reviewer",
       program: ["Education"],
       year: 2024,
       major: question.category,

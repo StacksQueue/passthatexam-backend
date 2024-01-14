@@ -1,4 +1,4 @@
-const questions = require("./../data/");
+const questions = require("./../data/LETMAPEH-reviewer/questions -2.json");
 const fs = require("fs");
 
 (() => {
