@@ -1,4 +1,4 @@
-const questions = require("./../data/LETMAPEH-reviewer/questions - 2.json");
+const questions = require("./../data/...Reviewed/phil-history-25QnA/questions.json");
 const Question = require("./../models/Question");
 const Category = require("./../models/Category");
 const mongoose = require("mongoose");
@@ -32,10 +32,11 @@ async function getMajorByName(category) {
 async function addQuestions(question) {
   try {
     let result = await Question.create({
-      source: "LETMAPEH-reviewer",
-      program: ["Education"],
+      source: "phil-history-25QnA",
+      program: ["Civil Service"],
       year: 2024,
-      major: question.category,
+      // major: ["Social Science", "Politics/Governance/Law-Related"],
+      major: ["Civil Service", "Philippine Constitution, General Information, Events"],
       question: question.question,
       choices: question.choices,
       answer: question.answer,
