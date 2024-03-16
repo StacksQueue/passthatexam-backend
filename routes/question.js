@@ -94,7 +94,7 @@ router.get("/groupbycategory", async (req, res) => {
   }
 });
 
-router.get("/search", async (req, res) => {
+router.get("/search2", async (req, res) => {
   try {
     let { page = 1, limit = 25, keyword = "", programs = [], sort = "asc" } = req.query;
     let query = {
@@ -132,6 +132,30 @@ router.get("/search", async (req, res) => {
     });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
+  }
+});
+
+router.get("/search", async (req, res) => {
+  try {
+    /**
+     * query: {$text: {$search: "code of the ethic"}}
+     * project: {score: {$meta: "textScore"}}
+     * sort: {score: {$meta: "textScore"}}
+     */
+    let { page = 1, limit = 25, keyword = "", programs = [], sort = "desc" } = req.query;
+    let query = { $text: { $search: "code of the ethic" } };
+    let project = { score: { $meta: "textScore" } };
+    let [questions, total] = await Promise.all([
+      Questions.find(query, project)
+        .limit(limit)
+        .skip(limit * (page - 1))
+        .sort({ score: { $meta: "textScore" } }),
+      Questions.find(query).count(),
+    ]);
+    res.json({ data: questions, success: true });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false });
   }
 });
 
