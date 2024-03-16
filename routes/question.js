@@ -143,7 +143,7 @@ router.get("/search", async (req, res) => {
      * sort: {score: {$meta: "textScore"}}
      */
     let { page = 1, limit = 25, keyword = "", programs = [], sort = "desc" } = req.query;
-    let query = { $text: { $search: "code of the ethic" } };
+    let query = { $text: { $search: keyword } };
     let project = { score: { $meta: "textScore" } };
     let [questions, total] = await Promise.all([
       Questions.find(query, project)
