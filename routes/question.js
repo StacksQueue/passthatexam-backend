@@ -94,7 +94,7 @@ router.get("/groupbycategory", async (req, res) => {
   }
 });
 
-router.get("/search2", async (req, res) => {
+router.get("/search", async (req, res) => {
   try {
     let { page = 1, limit = 25, keyword = "", programs = [], sort = "asc" } = req.query;
     let query = {
@@ -135,7 +135,7 @@ router.get("/search2", async (req, res) => {
   }
 });
 
-router.get("/search", async (req, res) => {
+router.get("/search2", async (req, res) => {
   try {
     /**
      * query: {$text: {$search: "code of the ethic"}}
@@ -249,6 +249,22 @@ router.get("/category", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
+    console.log(req.body.category);
+    console.log(req.body.program);
+
+    await Questions.create({
+      source: req.body.source,
+      program: req.body.program ? req.body.program : ["Education"],
+      year: 2024,
+      // major: ["Social Science", "Politics/Governance/Law-Related"],
+      major: req.body.category,
+      question: req.body.question,
+      choices: req.body.choices,
+      answer: req.body.answer,
+      explanation: req.body.explanation ? req.body.explanation : "",
+      verified: true,
+      dis: req.body.dis ? req.body.dis : true,
+    });
     res.json({ data: null, message: "success post", success: true });
   } catch (err) {
     res.json({ data: null, message: err.message, success: false });
